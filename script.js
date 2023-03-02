@@ -24,11 +24,19 @@ function operate(x, operator, y) {
 }
 
 // adds functionality for number buttons
+let inputtedNumber;
 const screen = document.getElementById('screen');
 const numberButtons = document.querySelectorAll('.number-button');
 numberButtons.forEach(button => button.addEventListener('click', () => {
+    //will only allow one decimal point
+    if (button.textContent == "." && screen.textContent.includes(".")) {
+        return;
+    }
+    // doesn't type anymore than 13 chars to prevent overflow
     if (screen.textContent.length < 13) {
         screen.textContent += button.textContent;
+        inputtedNumber = screen.textContent;
+        console.log(inputtedNumber);
     }
 }));
 
