@@ -26,6 +26,12 @@ function operate(x, operator, y) {
 // adds functionality for number buttons
 const screen = document.getElementById('screen');
 const numberButtons = document.querySelectorAll('.number-button');
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => screen.textContent += button.textContent);
-});
+numberButtons.forEach(button => button.addEventListener('click', () => {
+    if (screen.textContent.length < 13) {
+        screen.textContent += button.textContent;
+    }
+}));
+
+// adds functionality for clear button
+const clearBtn = document.getElementById('clear-button');
+clearBtn.addEventListener('click', () => screen.textContent = '');
