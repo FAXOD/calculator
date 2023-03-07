@@ -88,11 +88,28 @@ equalsBtn.addEventListener('click', () => {
             screen.textContent = '0';
         }
     } else if (operator === undefined || screen.textContent == '') {
-        screen.textContent = firstValue;
-        memoryScreen.textContent = `${firstValue}=`;
+        screen.textContent = 'ERROR';
+        memoryScreen.textContent = ``;
     } else {
-        screen.textContent = operate(firstValue, operator, screen.textContent);
+        let answer = operate(firstValue, operator, screen.textContent);
+        if (answer.toString().length < 13) {
+            screen.textContent = answer;
+        } else {
+            screen.textContent = answer.toPrecision(8);
+        }
+
     }
     displayingAnswer = true;
     operator = undefined;
+});
+
+const backspaceBtn = document.getElementById('backspace-button');
+backspaceBtn.addEventListener('click', () => {
+    if (screen.textContent !== "" && screen.textContent !== 'ERROR' && !displayingAnswer) {
+        screen.textContent = screen.textContent.slice(0, -1);
+    }
 })
+
+document.addEventListener('keydown', () => {
+    
+});
