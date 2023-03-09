@@ -14,6 +14,7 @@ function divide(x, y) {
     return x / y;
 }
 
+// calculates the given sum
 function operate(x, operator, y) {
     memoryScreen.textContent = `${firstValue}${operator}${screen.textContent}=`;
     switch (operator) {
@@ -30,59 +31,100 @@ function operate(x, operator, y) {
 
 const memoryScreen = document.getElementById('screen-top');
 
-// adds functionality for number buttons
+// adds event listeners for numbers and grabs screen element
 const screen = document.getElementById('screen-bottom');
 const numberButtons = document.querySelectorAll('.number-button');
-numberButtons.forEach(button => button.addEventListener('click', () => {
+numberButtons.forEach(button => button.addEventListener('click', numberOperation));
+
+// enters numbers when buttons are pressed
+function numberOperation(e) {
     //if an answer is on screen when a number is pressed the answer is cleared first
     if (displayingAnswer) {
         screen.textContent = '';
         displayingAnswer = false;
         operator = undefined;
     }
-    //will only allow one decimal point
-    if (button.textContent == "." && screen.textContent.includes(".")) {
-        return;
+    
+    switch (e.type) {
+        case "click":
+            if (this.textContent == "." && screen.textContent.includes(".")) {
+                return;
+            }
+            if (screen.textContent.length < 13) {
+                screen.textContent += this.textContent;
+            }
+            break;
+        case "keydown":
+            if (e.key == "." && screen.textContent.includes(".")) {
+                return;
+            }
+            if (screen.textContent.length < 13) {
+                screen.textContent += e.key;
+            }
+            break;
     }
-    // doesn't type anymore than 13 chars to prevent overflow
-    if (screen.textContent.length < 13) {
-        screen.textContent += button.textContent;
-    }
-}));
-
+};
 
 let displayingAnswer = false;
 
-// adds functionality for clear button
+// adds listener for clear button
 const clearBtn = document.getElementById('clear-button');
-clearBtn.addEventListener('click', () => {
+clearBtn.addEventListener('click', clearOperation);
+
+// clears the screen
+function clearOperation() {
     screen.textContent = '';
     memoryScreen.textContent = '';
     displayingAnswer = false;
     operator = undefined;
     firstValue = '';
-});
+};
 
-//when an operator is pressed the number on screen + operator are logged and the screen is cleared
+// adds event listener for operator buttons
 let firstValue;
 let operator;
 const operatorBtns = document.querySelectorAll('.operator-button');
-operatorBtns.forEach(button => button.addEventListener('click', () => {
-    if (operator === undefined) {
-        operator = button.textContent;
-        firstValue = screen.textContent;
-        screen.textContent = '';
-        displayingAnswer = false;
-    } else {
-        firstValue = operate(firstValue, operator, screen.textContent);
-        operator = button.textContent;
-        screen.textContent = '';
+operatorBtns.forEach(button => button.addEventListener('click', operatorOperation));
+
+// allows operator buttons to be used
+function operatorOperation(e) {
+    switch (e.type) {
+        case "click":
+            if (operator === undefined) {
+                operator = this.textContent;
+                firstValue = screen.textContent;
+                screen.textContent = '';
+                displayingAnswer = false;
+            } else {
+                firstValue = operate(firstValue, operator, screen.textContent);
+                operator = this.textContent;
+                screen.textContent = '';
+            }
+            break;
+        case "keydown":
+            if (operator === undefined) {
+                operator = e.key;
+                if (operator == "*") {
+                    operator = "x";
+                }
+                firstValue = screen.textContent;
+                screen.textContent = '';
+                displayingAnswer = false;
+            } else {
+                firstValue = operate(firstValue, operator, screen.textContent);
+                operator = e.key;
+                screen.textContent = '';
+            }
     }
     memoryScreen.textContent = firstValue + operator;
-}));
+};
 
+// adds event listener for equals button
 const equalsBtn = document.getElementById('equals');
-equalsBtn.addEventListener('click', () => {
+equalsBtn.addEventListener('click', equalsOperation);
+
+// adds functionality for equals button
+function equalsOperation() {
     if (firstValue === undefined || firstValue == '') {
         if (screen.textContent == '') {
             screen.textContent = '0';
@@ -101,15 +143,47 @@ equalsBtn.addEventListener('click', () => {
     }
     displayingAnswer = true;
     operator = undefined;
-});
+};
 
 const backspaceBtn = document.getElementById('backspace-button');
-backspaceBtn.addEventListener('click', () => {
+backspaceBtn.addEventListener('click', backspaceOperation);
+
+function backspaceOperation() {
     if (screen.textContent !== "" && screen.textContent !== 'ERROR' && !displayingAnswer) {
         screen.textContent = screen.textContent.slice(0, -1);
     }
-})
+};
 
-document.addEventListener('keydown', () => {
-    
+document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+        case ".": 
+            numberOperation(e);
+            break;
+        case "+":
+        case "-":
+        case "*":
+        case "/": 
+            operatorOperation(e);
+            break;
+        case "Enter":
+        case "=":
+            equalsOperation();
+            break;
+        case "Backspace":
+            backspaceOperation();
+            break;
+        case "Escape":
+            clearOperation();
+            break;
+    }
 });
