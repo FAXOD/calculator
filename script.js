@@ -1,3 +1,4 @@
+// creates functions for basic mathematical operations
 function add(x, y) {
     return x + y;
 }
@@ -14,7 +15,7 @@ function divide(x, y) {
     return x / y;
 }
 
-// calculates the given sum
+// calculates the given sum based on the operator given
 function operate(x, operator, y) {
     memoryScreen.textContent = `${firstValue}${operator}${screen.textContent}=`;
     switch (operator) {
@@ -29,9 +30,8 @@ function operate(x, operator, y) {
     }
 }
 
-const memoryScreen = document.getElementById('screen-top');
-
 // adds event listeners for numbers and grabs screen element
+const memoryScreen = document.getElementById('screen-top');
 const screen = document.getElementById('screen-bottom');
 const numberButtons = document.querySelectorAll('.number-button');
 numberButtons.forEach(button => button.addEventListener('click', numberOperation));
@@ -65,7 +65,9 @@ function numberOperation(e) {
     }
 };
 
-let displayingAnswer = false;
+// creates variables to be used
+let firstValue; //stored the screen text when an operator is pressed
+let displayingAnswer = false; // allows chained operations and prevents editing the answer on screen
 
 // adds listener for clear button
 const clearBtn = document.getElementById('clear-button');
@@ -81,7 +83,6 @@ function clearOperation() {
 };
 
 // adds event listener for operator buttons
-let firstValue;
 let operator;
 const operatorBtns = document.querySelectorAll('.operator-button');
 operatorBtns.forEach(button => button.addEventListener('click', operatorOperation));
@@ -153,15 +154,18 @@ function equalsOperation() {
     operator = undefined;
 };
 
+// adds event listener to backspace button
 const backspaceBtn = document.getElementById('backspace-button');
 backspaceBtn.addEventListener('click', backspaceOperation);
 
+// adds functionality for backspace button
 function backspaceOperation() {
     if (screen.textContent !== "" && screen.textContent !== 'ERROR' && !displayingAnswer) {
         screen.textContent = screen.textContent.slice(0, -1);
     }
 };
 
+// adds event listener to allow for keyboard inputs
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case "0":
