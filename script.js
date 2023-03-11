@@ -90,6 +90,10 @@ operatorBtns.forEach(button => button.addEventListener('click', operatorOperatio
 function operatorOperation(e) {
     switch (e.type) {
         case "click":
+            if (this.textContent == "-" && screen.textContent == "") {
+                screen.textContent += "-";
+                return;
+            }
             if (operator === undefined) {
                 operator = this.textContent;
                 firstValue = screen.textContent;
@@ -102,6 +106,10 @@ function operatorOperation(e) {
             }
             break;
         case "keydown":
+            if (e.key == "-" && screen.textContent == "") {
+                screen.textContent += "-";
+                return;
+            }
             if (operator === undefined) {
                 operator = e.key;
                 if (operator == "*") {
